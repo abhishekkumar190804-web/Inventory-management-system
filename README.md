@@ -31,9 +31,7 @@ inventrack/
 │   │   └── styles/        # CSS with design system
 │   ├── Dockerfile
 │   ├── nginx.conf
-│   ├── vercel.json        # SPA rewrites for Vercel
 │   └── package.json
-├── render.yaml            # Render Blueprint (infra-as-code)
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
@@ -114,61 +112,29 @@ VITE_API_URL=http://localhost:8000/api npm run dev
 | ALLOWED_ORIGINS    | CORS origins (comma sep) | http://localhost:5173,...      |
 | VITE_API_URL       | Backend URL for frontend | http://localhost:8000/api      |
 
-## Deployment (Free Tier)
-
-> Blueprint (`render.yaml`) requires a paid Render plan. Use the manual steps below for the free tier.
+## Deployment
 
 ### Render (Backend)
 
-**Step 1 — Create a free PostgreSQL database**
-
-Go to **Render Dashboard → New → PostgreSQL** and fill in:
-
-| Field        | Value               |
-| ------------ | ------------------- |
-| Name         | `inventrack-db`     |
-| Database     | `inventrack`        |
-| User         | `inventrack`        |
-| Plan         | **Free**            |
-
-After creation, copy the **Internal Database URL** (starts with `postgresql://...`).
-
-**Step 2 — Create a free Web Service**
-
-Go to **Render Dashboard → New → Web Service** and connect your GitHub repo.
-
-| Field            | Value                                      |
-| ---------------- | ------------------------------------------ |
-| Name             | `inventrack-backend`                       |
-| Root Directory   | `backend`                                  |
-| Runtime          | **Python 3**                               |
-| Build Command    | `pip install -r requirements.txt`          |
-| Start Command    | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
-| Plan             | **Free**                                   |
-
-**Step 3 — Add environment variables**
-
-In the Web Service dashboard → **Environment** tab, add:
-
-| Key                | Value                                            |
-| ------------------ | ------------------------------------------------ |
-| `DATABASE_URL`     | Paste the Internal Database URL from Step 1      |
-| `ALLOWED_ORIGINS`  | `https://your-frontend.vercel.app` (add later)   |
-
-Click **Deploy**. Render will build and start your backend for free.
-
-> The free web service spins down after 15 min of inactivity and wakes on request. That's fine for demo/testing.
+1. Create a new **Web Service** on Render
+2. Set **Build Command**: `pip install -r requirements.txt`
+3. Set **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Add environment variables from the table above (use a managed PostgreSQL)
+5. Set `ALLOWED_ORIGINS` to your frontend domain
 
 ### Vercel (Frontend)
 
-A `vercel.json` is already included for SPA routing.
+This project uses Vite, which requires client-side rendering (not SSR). Deploy as a SPA:
 
-1. Go to **vercel.com → Add New → Project**
-2. Import your GitHub repo
-3. **Root Directory**: select `frontend/`
-4. **Framework Preset**: Vite (auto-detected)
-5. Add environment variable:
-   - `VITE_API_URL` = `https://your-backend.onrender.com/api`
-6. Click **Deploy** (free tier, no credit card needed)
+1. Install Vercel CLI: `npm i -g vercel`
+2. Set **Framework Preset**: Vite
+3. Set `VITE_API_URL` to your Render backend URL
+4. Add a `vercel.json` rewrite rule for SPA fallback:
 
-> After both are live, update `ALLOWED_ORIGINS` on Render to your Vercel domain (e.g. `https://inventrack-frontend.vercel.app`).
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+Alternatively, deploy directly from the Vercel dashboard by importing the `frontend/` directory.
