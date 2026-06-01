@@ -10,7 +10,7 @@ services:
           name: inventrack-db
           property: connectionString
       - key: ALLOWED_ORIGINS
-        value: https://inventrack-frontend.vercel.app
+        value: https://frontend-abshk-s-projects.vercel.app
 
 databases:
   - name: inventrack-db
