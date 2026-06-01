@@ -31,7 +31,9 @@ inventrack/
 │   │   └── styles/        # CSS with design system
 │   ├── Dockerfile
 │   ├── nginx.conf
+│   ├── vercel.json        # SPA rewrites for Vercel
 │   └── package.json
+├── render.yaml            # Render Blueprint (infra-as-code)
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
@@ -114,27 +116,77 @@ VITE_API_URL=http://localhost:8000/api npm run dev
 
 ## Deployment
 
-### Render (Backend)
+### Render (Backend) — Manual Steps
 
-1. Create a new **Web Service** on Render
-2. Set **Build Command**: `pip install -r requirements.txt`
-3. Set **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-4. Add environment variables from the table above (use a managed PostgreSQL)
-5. Set `ALLOWED_ORIGINS` to your frontend domain
+1. **Create a PostgreSQL database** on Render:
+   - Go to **Dashboard → New → PostgreSQL**
+   - Name: `inventrack-db`, DB: `inventrack`, User: `inventrack`
+   - After creation, copy the **Internal Database URL**
+
+2. **Create a Web Service**:
+   - **Dashboard → New → Web Service**
+   - Connect your GitHub repo (set root to `backend/`) or use **Existing Dockerfile**
+   - **Name**: `inventrack-backend`
+   - **Runtime**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+3. **Add environment variables** in Render dashboard:
+   - `DATABASE_URL` — paste the Internal Database URL from step 1
+   - `ALLOWED_ORIGINS` — set to `https://your-frontend.vercel.app` (add after Vercel deploy)
+
+4. **Deploy** — Render will build and start the service.
+
+### Render (Backend) — Blueprint (auto)
+
+A `render.yaml` is already included. Push your repo to GitHub, then:
+
+1. Go to **Render Dashboard → New → Blueprint**
+2. Connect your GitHub repo
+3. Render auto-detects `render.yaml` and creates the database + web service
+
+```yaml
+# render.yaml (already in repo)
+services:
+  - type: web
+    name: inventrack-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inventrack-db
+          property: connectionString
+      - key: ALLOWED_ORIGINS
+        value: https://inventrack-frontend.vercel.app
+
+databases:
+  - name: inventrack-db
+    databaseName: inventrack
+    user: inventrack
+```
 
 ### Vercel (Frontend)
 
-This project uses Vite, which requires client-side rendering (not SSR). Deploy as a SPA:
+A `vercel.json` is already included for SPA routing. Deploy via:
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Set **Framework Preset**: Vite
-3. Set `VITE_API_URL` to your Render backend URL
-4. Add a `vercel.json` rewrite rule for SPA fallback:
+**Option A — Vercel Dashboard (easier):**
+1. Push your repo to GitHub
+2. Go to **vercel.com → Add New → Project**
+3. Import your GitHub repo
+4. **Root Directory**: select `frontend/`
+5. **Framework Preset**: Vite (auto-detected)
+6. **Environment Variable**:
+   - `VITE_API_URL` — set to `https://your-render-backend.onrender.com/api`
+7. Click **Deploy**
 
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
+**Option B — Vercel CLI:**
+```bash
+npm i -g vercel
+cd frontend
+vercel --prod
+# Set VITE_API_URL when prompted
 ```
 
-Alternatively, deploy directly from the Vercel dashboard by importing the `frontend/` directory.
+> **Important**: After deploying both, update `ALLOWED_ORIGINS` on Render to your Vercel domain (e.g. `https://inventrack-frontend.vercel.app`).
