@@ -16,7 +16,10 @@ function AddCustomerModal({ onClose, onSave }) {
       toast.success('Customer created');
       onSave(created);
       onClose();
-    } catch {}
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   return (
@@ -87,7 +90,10 @@ export default function Customers() {
       toast.success('Customer deleted');
       setDeleteTarget(null);
       load();
-    } catch {}
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   return (

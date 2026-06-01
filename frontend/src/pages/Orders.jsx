@@ -56,7 +56,10 @@ function CreateOrderModal({ onClose, onSave }) {
       toast.success('Order created');
       onSave(created);
       onClose();
-    } catch {}
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   return (
@@ -221,7 +224,10 @@ export default function Orders() {
       toast.success('Order cancelled — stock restored');
       setCancelTarget(null);
       load();
-    } catch {}
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   return (

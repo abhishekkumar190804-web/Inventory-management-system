@@ -1,18 +1,13 @@
 import axios from 'axios';
-import toast from 'react-hot-toast';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://inventrack-backend-ujyy.onrender.com/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    const msg = err.response?.data?.detail || err.message || 'Something went wrong';
-    toast.error(msg);
-    return Promise.reject(err);
-  }
+  (err) => Promise.reject(err)
 );
 
 export const getDashboard = () => api.get('/dashboard').then((r) => r.data);

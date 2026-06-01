@@ -41,7 +41,10 @@ function ProductModal({ product, onClose, onSave }) {
         onSave(created);
       }
       onClose();
-    } catch {}
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   return (
@@ -120,7 +123,10 @@ export default function Products() {
       toast.success('Product deleted');
       setDeleteTarget(null);
       load();
-    } catch {}
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.message || 'Something went wrong';
+      toast.error(msg);
+    }
   };
 
   const stockClass = (qty) => {
