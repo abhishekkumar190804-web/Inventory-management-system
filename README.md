@@ -4,12 +4,12 @@ A full-stack inventory and order management system built with **FastAPI** (Pytho
 
 ## Live Demo
 
-| Service    | URL                                                            |
-| ---------- | -------------------------------------------------------------- |
-| Frontend   | https://frontend-abshk-s-projects.vercel.app                   |
-| Backend    | https://inventrack-backend-ujyy.onrender.com                   |
-| API Docs   | https://inventrack-backend-ujyy.onrender.com/docs              |
-| Health     | https://inventrack-backend-ujyy.onrender.com/api/health        |
+| Service  | URL                                                     |
+| -------- | ------------------------------------------------------- |
+| Frontend | https://inventorymanagementsystem-lake.vercel.app       |
+| Backend  | https://inventrack-backend-ujyy.onrender.com            |
+| API Docs | https://inventrack-backend-ujyy.onrender.com/docs       |
+| Health   | https://inventrack-backend-ujyy.onrender.com/api/health |
 
 ## Features
 
@@ -22,21 +22,21 @@ A full-stack inventory and order management system built with **FastAPI** (Pytho
 
 ## Tech Stack
 
-| Layer      | Technology                                                   |
-| ---------- | ------------------------------------------------------------ |
-| Backend    | Python 3.11+, FastAPI, SQLAlchemy 2.0, Pydantic 2, PostgreSQL |
-| Frontend   | React 18, Vite, React Router v6, Axios, CSS design system    |
-| Container  | Docker, Docker Compose                                       |
-| Cloud      | Render (backend), Vercel (frontend), Docker Hub (images)     |
+| Layer     | Technology                                                    |
+| --------- | ------------------------------------------------------------- |
+| Backend   | Python 3.11+, FastAPI, SQLAlchemy 2.0, Pydantic 2, PostgreSQL |
+| Frontend  | React 18, Vite, React Router v6, Axios, CSS design system     |
+| Container | Docker, Docker Compose                                        |
+| Cloud     | Render (backend), Vercel (frontend), Docker Hub (images)      |
 
 ## Docker Images
 
 Docker images are published on Docker Hub under the `6306706055` namespace:
 
-| Image                                   | Pull Command                                      |
-| --------------------------------------- | ------------------------------------------------- |
-| Backend                                 | `docker pull 6306706055/inventrack-backend`       |
-| Frontend                                | `docker pull 6306706055/inventrack-frontend`      |
+| Image    | Pull Command                                 |
+| -------- | -------------------------------------------- |
+| Backend  | `docker pull 6306706055/inventrack-backend`  |
+| Frontend | `docker pull 6306706055/inventrack-frontend` |
 
 ```bash
 # Run locally with Docker Compose
@@ -122,22 +122,22 @@ VITE_API_URL=http://localhost:8000/api npm run dev
 
 ## API Reference
 
-| Method | Endpoint                | Description                          |
-| ------ | ----------------------- | ------------------------------------ |
-| GET    | /api/health             | Health check                         |
-| GET    | /api/dashboard          | Dashboard stats & low stock products |
-| GET    | /api/products           | List all products                    |
-| POST   | /api/products           | Create product (unique SKU)          |
-| GET    | /api/products/:id       | Get product by ID                    |
-| PUT    | /api/products/:id       | Update product                       |
-| DELETE | /api/products/:id       | Delete product                       |
-| GET    | /api/customers          | List all customers                   |
-| POST   | /api/customers          | Create customer (unique email)       |
-| DELETE | /api/customers/:id      | Delete customer                      |
-| GET    | /api/orders             | List all orders                      |
-| POST   | /api/orders             | Create order (validates stock)       |
-| GET    | /api/orders/:id         | Get order with items                 |
-| DELETE | /api/orders/:id         | Cancel order (restores stock)        |
+| Method | Endpoint           | Description                          |
+| ------ | ------------------ | ------------------------------------ |
+| GET    | /api/health        | Health check                         |
+| GET    | /api/dashboard     | Dashboard stats & low stock products |
+| GET    | /api/products      | List all products                    |
+| POST   | /api/products      | Create product (unique SKU)          |
+| GET    | /api/products/:id  | Get product by ID                    |
+| PUT    | /api/products/:id  | Update product                       |
+| DELETE | /api/products/:id  | Delete product                       |
+| GET    | /api/customers     | List all customers                   |
+| POST   | /api/customers     | Create customer (unique email)       |
+| DELETE | /api/customers/:id | Delete customer                      |
+| GET    | /api/orders        | List all orders                      |
+| POST   | /api/orders        | Create order (validates stock)       |
+| GET    | /api/orders/:id    | Get order with items                 |
+| DELETE | /api/orders/:id    | Cancel order (restores stock)        |
 
 ## Business Rules
 
@@ -151,14 +151,14 @@ VITE_API_URL=http://localhost:8000/api npm run dev
 
 ## Environment Variables
 
-| Variable           | Description              | Default                        |
-| ------------------ | ------------------------ | ------------------------------ |
-| POSTGRES_USER      | PostgreSQL user          | inventrack                     |
-| POSTGRES_PASSWORD  | PostgreSQL password      | inventrack_pass                |
-| POSTGRES_DB        | PostgreSQL database name | inventrack                     |
-| DATABASE_URL       | Full database connection | postgresql://...               |
-| ALLOWED_ORIGINS    | CORS origins (comma sep) | http://localhost:5173,...      |
-| VITE_API_URL       | Backend URL for frontend | http://localhost:8000/api      |
+| Variable          | Description              | Default                   |
+| ----------------- | ------------------------ | ------------------------- |
+| POSTGRES_USER     | PostgreSQL user          | inventrack                |
+| POSTGRES_PASSWORD | PostgreSQL password      | inventrack_pass           |
+| POSTGRES_DB       | PostgreSQL database name | inventrack                |
+| DATABASE_URL      | Full database connection | postgresql://...          |
+| ALLOWED_ORIGINS   | CORS origins (comma sep) | http://localhost:5173,... |
+| VITE_API_URL      | Backend URL for frontend | http://localhost:8000/api |
 
 ## Deployment
 
@@ -172,13 +172,13 @@ The backend is deployed at **https://inventrack-backend-ujyy.onrender.com**.
 4. Set **Build Command**: `pip install -r requirements.txt`
 5. Set **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 6. Add environment variables (use a managed PostgreSQL)
-7. Set `ALLOWED_ORIGINS` to your frontend domain (e.g. `https://frontend-abshk-s-projects.vercel.app`)
+7. Set `ALLOWED_ORIGINS` to your frontend domain (e.g. `https://inventorymanagementsystem-lake.vercel.app`)
 
 > **Note:** Render's default Python runtime may be newer than 3.11. If you encounter build failures with `pydantic`, `sqlalchemy`, or `psycopg2-binary`, upgrade them to the latest versions which support Python 3.14.
 
 ### Vercel (Frontend)
 
-The frontend is deployed at **https://frontend-abshk-s-projects.vercel.app**.
+The frontend is deployed at **https://inventorymanagementsystem-lake.vercel.app**.
 
 This project uses Vite (client-side rendering). Deploy as a SPA:
 
